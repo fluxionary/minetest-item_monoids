@@ -14,7 +14,7 @@ end
 
 function ItemMonoid:_get_values(meta)
 	local key = f("tm:%s", self._name)
-	return minetest.deserialize(meta:get(key)) or {}
+	return minetest.deserialize(meta:get_string(key)) or {}
 end
 
 function ItemMonoid:_set_values(meta, values)
@@ -27,9 +27,9 @@ function ItemMonoid:add_change(itemstack, value, id)
 		return
 	end
 	local meta = itemstack:get_meta()
-	local values = self._get_values(meta)
+	local values = self:_get_values(meta)
 	values[id] = value
-	self._set_values(meta, values)
+	self:_set_values(meta, values)
 	local default
 	if self._get_default then
 		default = self._get_default(itemstack)
@@ -46,9 +46,9 @@ function ItemMonoid:del_change(itemstack, id)
 		return
 	end
 	local meta = itemstack:get_meta()
-	local values = self._get_values(meta)
+	local values = self:_get_values(meta)
 	values[id] = nil
-	self._set_values(meta, values)
+	self:_set_values(meta, values)
 	local default
 	if self._get_default then
 		default = self._get_default(itemstack)
@@ -65,7 +65,7 @@ function ItemMonoid:value(itemstack)
 		return
 	end
 	local meta = itemstack:get_meta()
-	local values = self._get_values(meta)
+	local values = self:_get_values(meta)
 	local default
 	if self._get_default then
 		default = self._get_default(itemstack)
