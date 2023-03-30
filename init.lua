@@ -60,12 +60,15 @@ function ItemMonoid:del_change(itemstack, id)
 	return folded
 end
 
-function ItemMonoid:value(itemstack)
+function ItemMonoid:value(itemstack, key)
 	if self._predicate and not self._predicate(itemstack) then
 		return
 	end
 	local meta = itemstack:get_meta()
 	local values = self:_get_values(meta)
+	if key then
+		return values[key]
+	end
 	local default
 	if self._get_default then
 		default = self._get_default(itemstack)
