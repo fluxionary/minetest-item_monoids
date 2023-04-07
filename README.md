@@ -1,6 +1,6 @@
 # item_monoids
 
-an API for creating monoids for items. useful for
+an API for controlling item properties via monoids. useful for
 * enchantment mods
 * applying penalties or boosts to dig speed and such, based on player attributes or other systems
 * when modifying other metadata (e.g. the description) of an item.
@@ -11,7 +11,7 @@ create a tool monoid:
 
 ```lua
 local full_punch_monoid = item_monoids.make_monoid("full_punch", {
-    predicate = function(itemstack) -- [optional] does this monoid apply to this stack?
+    predicate = function(itemstack) -- [optional] should this monoid apply to this stack?
         local def = itemstack:get_definition()
         return def and def.tool_capabilities and def.tool_capabilities.full_punch_interval
     end,
