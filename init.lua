@@ -5,25 +5,25 @@ local f = string.format
 local ItemMonoid = futil.class1()
 
 function ItemMonoid:_init(name, def)
-	self._name = name
-	self._predicate = def.predicate
-	self._get_default = def.get_default
-	self._fold = def.fold
-	self._apply = def.apply
+	self.name = name
+	self.predicate = def.predicate
+	self.get_default = def.get_default
+	self.fold = def.fold
+	self.apply = def.apply
 end
 
 function ItemMonoid:_get_values(meta)
-	local key = f("tm:%s", self._name)
+	local key = f("tm:%s", self.name)
 	return minetest.deserialize(meta:get_string(key)) or {}
 end
 
 function ItemMonoid:_set_values(meta, values)
-	local key = f("tm:%s", self._name)
+	local key = f("tm:%s", self.name)
 	meta:set_string(key, minetest.serialize(values))
 end
 
 function ItemMonoid:add_change(itemstack, value, id)
-	if self._predicate and not self._predicate(itemstack) then
+	if self.predicate and not self.predicate(itemstack) then
 		return
 	end
 	local meta = itemstack:get_meta()
@@ -31,18 +31,18 @@ function ItemMonoid:add_change(itemstack, value, id)
 	values[id] = value
 	self:_set_values(meta, values)
 	local default
-	if self._get_default then
-		default = self._get_default(itemstack)
+	if self.get_default then
+		default = self.get_default(itemstack)
 	end
-	local folded = self._fold(values, default)
-	if self._apply then
-		self._apply(folded, itemstack)
+	local folded = self.fold(values, default)
+	if self.apply then
+		self.apply(folded, itemstack)
 	end
 	return folded
 end
 
 function ItemMonoid:del_change(itemstack, id)
-	if self._predicate and not self._predicate(itemstack) then
+	if self.predicate and not self.predicate(itemstack) then
 		return
 	end
 	local meta = itemstack:get_meta()
@@ -50,18 +50,18 @@ function ItemMonoid:del_change(itemstack, id)
 	values[id] = nil
 	self:_set_values(meta, values)
 	local default
-	if self._get_default then
-		default = self._get_default(itemstack)
+	if self.get_default then
+		default = self.get_default(itemstack)
 	end
-	local folded = self._fold(values, default)
-	if self._apply then
-		self._apply(folded, itemstack)
+	local folded = self.fold(values, default)
+	if self.apply then
+		self.apply(folded, itemstack)
 	end
 	return folded
 end
 
 function ItemMonoid:value(itemstack, key)
-	if self._predicate and not self._predicate(itemstack) then
+	if self.predicate and not self.predicate(itemstack) then
 		return
 	end
 	local meta = itemstack:get_meta()
@@ -70,10 +70,10 @@ function ItemMonoid:value(itemstack, key)
 		return values[key]
 	end
 	local default
-	if self._get_default then
-		default = self._get_default(itemstack)
+	if self.get_default then
+		default = self.get_default(itemstack)
 	end
-	return self._fold(values, default)
+	return self.fold(values, default)
 end
 
 item_monoids.make_monoid = ItemMonoid
